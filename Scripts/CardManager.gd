@@ -393,7 +393,6 @@ func _finish_update_board_state():
 	if _has_won():
 		
 		_win_count += 1
-		if (_win_count > 9999 ): _win_count = 9999
 		_save()
 		_game_scene._display_victory_screen()
 
