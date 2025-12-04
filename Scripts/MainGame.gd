@@ -48,7 +48,7 @@ func _ready():
 	CardManager._beasts_button_group = _fregate_button.button_group
 	CardManager._beasts_button_group.pressed.connect(CardManager._on_beast_button_pressed)
 	
-	_win_count_label.text = str(CardManager._win_count)
+	_win_count_label.text = get_win_count_str(CardManager._win_count)
 	
 	
 	await _create_deck()
@@ -200,7 +200,7 @@ func _disable_beast_buttons():
 	_kraken_button.disabled = true
 
 func _display_victory_screen():
-	_win_count_label.text = str(CardManager._win_count)
+	_win_count_label.text = get_win_count_str(CardManager._win_count)
 	_victory_screen_instance = _victory_screen.instantiate()
 	add_child(_victory_screen_instance)
 	
@@ -236,3 +236,17 @@ func _on_restart_game_button_long_press():
 
 func _on_seed_line_edit_changed(seed):
 	_next_seed = seed
+
+func get_win_count_str(_win_count: int) -> String:
+	var win_count_str = str(_win_count)
+	if win_count_str.length() <= 4:
+		return win_count_str
+	var result := ""
+	var i := 0
+	while i < win_count_str.length():
+		var end_index = min(i + 4, win_count_str.length())
+		result += win_count_str.substr(i, end_index - i)
+		if end_index < win_count_str.length():
+			result += "\n"
+		i += 4
+	return result
