@@ -154,10 +154,10 @@ func _new_game(restart_game := false):
 		else :
 			_rand.randomize()
 	
-	var str := str(_rand.seed)
-	if str.begins_with('-'):
-		str[0] = '_'
-	_current_seed_line.text = str
+	var seed_str := str(_rand.seed)
+	if seed_str.begins_with('-'):
+		seed_str[0] = '_'
+	_current_seed_line.text = seed_str
 	
 	_seed_line_edit.text = ""
 	_next_seed = -1
@@ -234,8 +234,8 @@ func _on_exit_button_long_press():
 func _on_restart_game_button_long_press():
 	_new_game(true)
 
-func _on_seed_line_edit_changed(seed):
-	_next_seed = seed
+func _on_seed_line_edit_changed(next_seed):
+	_next_seed = next_seed
 
 func get_win_count_str(_win_count: int) -> String:
 	var win_count_str = str(_win_count)

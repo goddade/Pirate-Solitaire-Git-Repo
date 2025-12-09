@@ -466,7 +466,7 @@ func _discard_card(card: Card, tween_to_slot := true, speed_modifier : float = 0
 	if card._number != null :
 		card.z_index = card._number
 	else :
-		card.z_index = card.get_index()*0.2 +1
+		card.z_index = int(card.get_index()*0.2) +1
 		
 	if tween_to_slot:
 		
