@@ -7,6 +7,7 @@ var _moves: Array = []
 
 enum Action {
 	GAME_START,
+	GAME_WIN,
 	DISCARD_BEAST,
 	DOUBLE_CLICK,
 	MOVE_TO_STACK,
@@ -29,6 +30,7 @@ func start(game_seed: int) -> void:
 	record_move_dic({
 		"act": Action.GAME_START,
 		"seed": _game_seed,
+		"time_utc": Time.get_unix_time_from_system(),
 		"time": Time.get_ticks_msec()
 	})
 
@@ -81,13 +83,13 @@ func save_replay() -> bool:
 		push_error("Failed to open replay file: %s" % fname)
 		return false
 
-	var content := {
-		"seed": _game_seed,
-		"saved_time_unix": Time.get_unix_time_from_system(),
-		"moves": _moves
-	}
+	record_move_dic({
+		"act": Action.GAME_WIN,
+		"time_utc": Time.get_unix_time_from_system(),
+	})
 
-	f.store_string(JSON.stringify(content))
+
+	f.store_string(JSON.stringify(_moves))
 	f.close()
 	print("Replay saved:", fname)
 	return true
