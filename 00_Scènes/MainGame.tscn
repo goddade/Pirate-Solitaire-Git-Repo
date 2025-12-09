@@ -647,7 +647,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture_normal = ExtResource("31_4blv1")
 stretch_mode = 3
-script = ExtResource("27_qgwli")
+script = ExtResource("30_c6kiw")
 
 [node name="Highlighted button3" type="TextureRect" parent="Restart Game Button"]
 show_behind_parent = true
@@ -861,4 +861,5 @@ texture = ExtResource("4_bthxh")
 [connection signal="long_press" from="New Game Button" to="." method="_on_new_game_button_long_press"]
 [connection signal="button_down" from="Restart Game Button" to="Restart Game Button" method="_on_button_down"]
 [connection signal="button_up" from="Restart Game Button" to="Restart Game Button" method="_on_button_up"]
+[connection signal="double_click" from="Restart Game Button" to="." method="_on_restart_game_button_double_click"]
 [connection signal="long_press" from="Restart Game Button" to="." method="_on_restart_game_button_long_press"]

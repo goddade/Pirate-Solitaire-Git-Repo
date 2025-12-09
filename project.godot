@@ -27,6 +27,7 @@ boot_splash/minimum_display_time=3000
 
 CardManager="*res://Scripts/CardManager.gd"
 Recorder="*res://Scripts/ReplayRecorder.gd"
+Player="*res://Scripts/ReplayPlayer.gd"
 
 [display]
 

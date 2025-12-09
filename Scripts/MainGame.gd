@@ -220,6 +220,9 @@ func _hide_victory_screen():
 func _on_tree_exited():
 	pass
 
+func _on_restart_game_button_double_click():
+	Player.load_replay(_rand.seed)
+	Player.play_replay()
 
 func _on_new_game_button_long_press():
 	_new_game()
@@ -234,7 +237,7 @@ func _on_exit_button_long_press():
 
 func _on_restart_game_button_long_press():
 	_new_game(true)
-
+	
 func _on_seed_line_edit_changed(next_seed):
 	_next_seed = next_seed
 

@@ -4,7 +4,11 @@ class_name ReplayRecorder
 var _game_seed: int = 0
 var _move_idx: int = 0
 var _moves: Array = []
+var _enable_recording: bool = false
 
+var dir_path = "user://replays"
+var fname_base = dir_path + "/game%d.rpl"
+var fname_base_time = dir_path + "/game%d-%d.rpl"
 enum Action {
 	GAME_START,
 	GAME_WIN,
@@ -20,6 +24,7 @@ func _init():
 	_moves = []
 	_game_seed = 0
 	_move_idx = 0
+	_enable_recording = true
 
 func start(game_seed: int) -> void:
 	"""
@@ -34,10 +39,18 @@ func start(game_seed: int) -> void:
 		"time": Time.get_ticks_msec()
 	})
 
+func disable() -> void:
+	"""
+	Disable recording.
+	"""
+	_enable_recording = false
+
 func record_move_dic(move: Dictionary) -> void:
 	"""
 	Append a move dictionary.
 	"""
+	if not _enable_recording:
+		return
 	move["i"] = _move_idx
 	_move_idx += 1
 	move["time"] = Time.get_ticks_msec()
@@ -52,18 +65,20 @@ func record_move(act: int, from_idx: int, to_idx: int, stack_size: int) -> void:
 	var move = {"act": act, "f": from_idx, "t": to_idx, "s": stack_size}
 	record_move_dic(move)
 
-func record_beast_move(beast_idx: int, pirate1_idx: int, pirate2_idx: int) -> void:
+func record_beast_move(beast_name: String, pirate1_idx: int, pirate2_idx: int) -> void:
 	"""
 	Append a move record.
 	"""
-	var move = {"act": Action.DISCARD_BEAST, "b": beast_idx, "p1": pirate1_idx, "p2": pirate2_idx}
+	var move = {"act": Action.DISCARD_BEAST, "b": beast_name, "p1": pirate1_idx, "p2": pirate2_idx}
 	record_move_dic(move)
 
 func save_replay() -> bool:
 	"""
-	Save current replay to user://replays/<seed>.replay
+	Save current replay to user://replays/game<seed>.rpl
 	"""
-	var dir_path := "user://replays"
+	if not _enable_recording:
+		return false
+
 	var d := DirAccess.open("user://")
 	if d == null:
 		push_error("Cannot open user:// directory")
@@ -72,11 +87,10 @@ func save_replay() -> bool:
 	if not DirAccess.dir_exists_absolute(dir_path):
 		DirAccess.make_dir_absolute(dir_path)
 
-	var fname_base := "game%d.rpl" % _game_seed
-	var fname := "%s/%s" % [dir_path, fname_base]
+	var fname = fname_base % _game_seed
 
 	if FileAccess.file_exists(fname):
-		fname = "%s/%s_%d" % [dir_path, fname_base, Time.get_unix_time_from_system()]
+		fname = fname_base_time % [_game_seed, Time.get_unix_time_from_system()]
 
 	var f := FileAccess.open(fname, FileAccess.WRITE)
 	if f == null:
