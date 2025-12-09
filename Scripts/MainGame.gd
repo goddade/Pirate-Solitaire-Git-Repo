@@ -163,6 +163,7 @@ func _new_game(restart_game := false):
 	_next_seed = -1
 	
 	seed(_rand.seed)
+	Recorder.start(_rand.seed)
 	_current_deck.shuffle()
 	await _distribute_deck()
 	

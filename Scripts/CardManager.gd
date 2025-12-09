@@ -137,6 +137,7 @@ func _unhandled_input(event):
 #						var same_color_slot = _discard_slots[card._color]
 							_card_stacks[i].pop_back()
 							await _discard_card(card)
+							Recorder.record_move(Recorder.Action.DOUBLE_CLICK, i, 0, 1)
 							_update_board_state()
 							_is_double_clicking = false
 							return
@@ -150,6 +151,7 @@ func _unhandled_input(event):
 							if _color_trails[card._color] == card._number -1:
 								_trail_slots[i]._held_card = null
 								await _discard_card(card)
+								Recorder.record_move(Recorder.Action.DOUBLE_CLICK, i+_card_stacks.size(), 0, 1)
 								_update_board_state()
 								_is_double_clicking = false
 								return
@@ -278,6 +280,7 @@ func _pick_card(card: Card, touch_pos: Vector2):
 
 func _drop_stack(drop_pos : Vector2):
 	
+	var held_stack_size=_held_stack.size()
 	_game_scene._play_drop_sound()
 	
 	for i in _card_stacks.size():
@@ -295,6 +298,7 @@ func _drop_stack(drop_pos : Vector2):
 					_append_cards_to_new_stack(i)
 					_held_stack.clear()
 					
+					Recorder.record_move(Recorder.Action.MOVE_TO_STACK, _held_stack_index, i, held_stack_size)
 					_update_board_state()
 					return
 				else: 
@@ -313,6 +317,7 @@ func _drop_stack(drop_pos : Vector2):
 					
 					_held_stack.clear()
 					
+					Recorder.record_move(Recorder.Action.MOVE_TO_STACK, _held_stack_index, i, held_stack_size)
 					_update_board_state()
 					return
 					
@@ -337,6 +342,7 @@ func _drop_stack(drop_pos : Vector2):
 				
 					_held_stack.clear()
 					
+					Recorder.record_move(Recorder.Action.MOVE_TO_TRAIL, _held_stack_index, i, 1)
 					_update_board_state()
 					return
 		
@@ -355,7 +361,7 @@ func _drop_stack(drop_pos : Vector2):
 					
 					_held_stack.clear()
 					
-					
+					Recorder.record_move(Recorder.Action.MOVE_TO_COLOR, _held_stack_index, 0, 1)
 					_update_board_state()
 					return
 		# use garbage slots to help debug
@@ -369,6 +375,7 @@ func _drop_stack(drop_pos : Vector2):
 					card.z_index = slot._held_card.z_index +1
 				slot._held_card = card
 				_held_stack.clear()
+				Recorder.record_move(Recorder.Action.MOVE_TO_GARBAGE, _held_stack_index, i, held_stack_size)
 				_update_board_state()
 				return
 	
@@ -394,6 +401,7 @@ func _finish_update_board_state():
 		
 		_win_count += 1
 		_save()
+		Recorder.save_replay()
 		_game_scene._display_victory_screen()
 
 func _discard_available_cards(discarded_cards : int = 0):
@@ -582,7 +590,7 @@ func _discard_beast():
 	_beast_discard_slot.lock()
 	_beast_discard_slot = null
 	
-	
+	Recorder.record_beast_move(_selected_beast_index, _selected_pirates_index[0], _selected_pirates_index[1])
 	_update_board_state()
 
 func _get_available_pirates_index():
