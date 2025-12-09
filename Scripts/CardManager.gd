@@ -342,7 +342,7 @@ func _drop_stack(drop_pos : Vector2):
 				
 					_held_stack.clear()
 					
-					Recorder.record_move(Recorder.Action.MOVE_TO_TRAIL, _held_stack_index, i, 1)
+					Recorder.record_move(Recorder.Action.MOVE_TO_TRAIL, _held_stack_index, i+_card_stacks.size(), 1)
 					_update_board_state()
 					return
 		
